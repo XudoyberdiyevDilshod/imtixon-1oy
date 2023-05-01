@@ -19,7 +19,7 @@ const productController = {
     const subCategoryId = subCategories.find(
       (subCategory) => subCategory.sub_category_id == sub_category_id
     );
-
+    // validate sub_category_id
     if (!subCategoryId) {
       return response.json(200, arr);
     }
