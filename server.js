@@ -8,8 +8,8 @@ import subCategoryController from "./controllers/subCategory.controller.js";
 
 const PORT = process.env.PORT || 7000;
 
-function httpServer(req, res) {
-  const app = new Express(req, res);
+function httpServer(request, response) {
+  const app = new Express(request, response);
 
   // for admins
   app.get("/signin", adminController.GET);

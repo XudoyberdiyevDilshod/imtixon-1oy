@@ -5,33 +5,34 @@ import { read, write } from "../utils/model.js";
 
 const productController = {
   // method get for products
-  GET: (req, res) => {
+  GET: (request, response) => {
     const products = read("products");
     const subCategories = read("subCategories");
-    const { sub_category_id, category_id, model, color } = req.query;
-
+    const { sub_category_id, category_id, model, color } = request.query;
+    const arr = [];
     // filter with sub_category_id
     const product = products.filter(
       (product) => product.sub_category_id == sub_category_id
     );
 
     // find sub_category_id
-    const productId = subCategories.find(
+    const subCategoryId = subCategories.find(
       (subCategory) => subCategory.sub_category_id == sub_category_id
     );
 
-    if (productId) {
-      res.json(200, product);
-    } else throw new Error("not found sub_category_id");
+    if (!subCategoryId) {
+      return response.json(200, arr);
+    }
+
+    response.json(200, product);
   },
   // method post for products
-  POST: async (req, res) => {
+  POST: async (request, response) => {
     try {
       const { sub_category_id, product_name, price, color, model } =
-        await req.body;
+        await request.body;
       const products = read("products");
       const subCategories = read("subCategories");
-
 
       // validate product_name
 
@@ -55,16 +56,17 @@ const productController = {
 
         products.push(newProduct);
         write("products", products);
-        res.json(201, { status: 201, message: true, data: newProduct });
+        response.json(201, { status: 201, message: true, data: newProduct });
       } else throw new Error("not found sub_category_id");
     } catch (error) {
-      res.json(400, { status: 400, message: error.message });
+      response.json(400, { status: 400, message: error.message });
     }
   },
   // method put for products
-  PUT: async (req, res) => {
+  PUT: async (request, response) => {
     try {
-      const { product_id, product_name, price, model, color } = await req.body;
+      const { product_id, product_name, price, model, color } =
+        await request.body;
       const products = read("products");
 
       const product = products.find(
@@ -80,21 +82,20 @@ const productController = {
       product.price = price || product.price;
 
       write("products", products);
-      res.json(200, { status: 200, message: true });
+      response.json(200, { status: 200, message: true });
     } catch (error) {
-      res.json(400, { status: 400, message: error.message });
+      response.json(400, { status: 400, message: error.message });
     }
   },
   // method delete for products
-  DELETE: async (req, res) => {
+  DELETE: async (request, response) => {
     try {
-      const { product_id } = await req.body;
+      const { product_id } = await request.body;
       const products = read("products");
       const productIndex = products.findIndex(
         (product) => product.product_id == product_id
       );
 
-      
       if (productIndex == -1) {
         throw new Error("product not found...");
       }
@@ -102,9 +103,9 @@ const productController = {
       const [deleted_product] = products.splice(productIndex, 1);
       console.log(deleted_product);
       write("products", products);
-      res.json(204, { status: 204 });
+      response.json(204, { status: 204 });
     } catch (error) {
-      res.json(500, { status: 500, message: error.message });
+      response.json(500, { status: 500, message: error.message });
     }
   },
 };

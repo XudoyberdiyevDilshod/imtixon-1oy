@@ -1,11 +1,11 @@
 import { read, hashPassword } from "../utils/model.js";
 
 const adminController = {
-  GET: (req, res) => {
-    res.end("ok");
+  GET: (request, response) => {
+    response.end("ok");
   },
-  POST: async (req, res) => {
-    let { username, password } = await req.body;
+  POST: async (request, response) => {
+    let { username, password } = await request.body;
     const users = read("admins");
     try {
       password = hashPassword(password);
@@ -15,9 +15,9 @@ const adminController = {
       if (!user) {
         throw new Error("wrong username or password");
       }
-      res.json(201, { status: 201, message: true });
+      response.json(201, { status: 201, message: true });
     } catch (error) {
-      res.json(400, { status: 400, message: error.message });
+      response.json(400, { status: 400, message: error.message });
     }
   },
 };

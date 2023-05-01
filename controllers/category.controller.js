@@ -5,7 +5,7 @@ import { read, write } from "../utils/model.js";
 
 const categoryController = {
   // method get for categories
-  GET: (req, res) => {
+  GET: (request, response) => {
     const subCategories = read("subCategories");
     const categories = read("categories");
 
@@ -17,13 +17,13 @@ const categoryController = {
       );
     });
 
-    res.json(200, categories);
+    response.json(200, categories);
   },
 
   // method post for categories
-  POST: async (req, res) => {
+  POST: async (request, response) => {
     try {
-      const { category_name } = await req.body;
+      const { category_name } = await request.body;
       const categories = read("categories");
 
       // validate category_name
@@ -41,15 +41,15 @@ const categoryController = {
 
       categories.push(newCategory);
       write("categories", categories);
-      res.json(201, { status: 201, message: true, data: newCategory });
+      response.json(201, { status: 201, message: true, data: newCategory });
     } catch (error) {
       res.json(400, { status: 400, message: error.message });
     }
   },
   // method put for categories
-  PUT: async (req, res) => {
+  PUT: async (request, response) => {
     try {
-      const { category_id, category_name } = await req.body;
+      const { category_id, category_name } = await request.body;
       const categories = read("categories");
       const category = categories.find(
         (category) => category.category_id == category_id
@@ -59,21 +59,20 @@ const categoryController = {
         throw new Error("category not found");
       }
 
-
       // change category_name
 
       category.category_name = category_name || category.category_name;
 
       write("categories", categories);
-      res.json(200, { status: 200, message: true });
+      response.json(200, { status: 200, message: true });
     } catch (error) {
-      res.json(400, { status: 400, message: error.message });
+      response.json(400, { status: 400, message: error.message });
     }
   },
   // method delete for categories
-  DELETE: async (req, res) => {
+  DELETE: async (request, response) => {
     try {
-      const { category_id } = await req.body;
+      const { category_id } = await request.body;
       const categories = read("categories");
       const categoryIndex = categories.findIndex(
         (category) => category.category_id == category_id
@@ -82,15 +81,14 @@ const categoryController = {
         throw new Error("category not found...");
       }
 
-
       // delete category
 
       const [deleted_Category] = categories.splice(categoryIndex, 1);
 
       write("categories", categories);
-      res.json(204, { status: 204 });
+      response.json(204, { status: 204 });
     } catch (error) {
-      res.json(500, { status: 500, message: error.message });
+      response.json(500, { status: 500, message: error.message });
     }
   },
 };

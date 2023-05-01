@@ -123,15 +123,6 @@
 
 
 
-  {
-    "product_id": 1,
-    "sub_category_id": 1,
-    "model": "redmi",
-    "product_name": "redmi note 6 pro",
-    "color": "black",
-    "price": "140"
-  }
-
 
     POST
     /products

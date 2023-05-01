@@ -5,8 +5,8 @@ import { read, write } from "../utils/model.js";
 
 const subCategoryController = {
   // method get for subCategories
-  GET: async (req, res) => {
-    const { sub_category_id } = await req.body;
+  GET: async (request, response) => {
+    const { sub_category_id } = await request.body;
     const products = read("products");
     const subCategories = read("subCategories");
 
@@ -27,13 +27,13 @@ const subCategoryController = {
     );
 
     if (subCategoryId) {
-      res.json(200, subCategories);
+      response.json(200, subCategories);
     } else throw new Error("not found sub_category_id");
   },
   // method post for subCategories
-  POST: async (req, res) => {
+  POST: async (request, response) => {
     try {
-      const { category_id, sub_category_name } = await req.body;
+      const { category_id, sub_category_name } = await request.body;
       const subCategories = read("subCategories");
       const categories = read("categories");
 
@@ -41,7 +41,6 @@ const subCategoryController = {
       if (!(sub_category_name.length > 1 && sub_category_name.trim())) {
         throw new Error("Not found subCategory");
       }
-
 
       // find categoryId
 
@@ -59,16 +58,20 @@ const subCategoryController = {
         };
         subCategories.push(newSubCategory);
         write("subCategories", subCategories);
-        res.json(201, { status: 201, message: true, data: newSubCategory });
+        response.json(201, {
+          status: 201,
+          message: true,
+          data: newSubCategory,
+        });
       } else throw new Error("not found category_id");
     } catch (error) {
-      res.json(400, { status: 400, message: error.message });
+      response.json(400, { status: 400, message: error.message });
     }
   },
   // method put for subCategories
-  PUT: async (req, res) => {
+  PUT: async (request, response) => {
     try {
-      const { sub_category_id, sub_category_name } = await req.body;
+      const { sub_category_id, sub_category_name } = await request.body;
       const subCategories = read("subCategories");
 
       const subCategory = subCategories.find(
@@ -83,15 +86,15 @@ const subCategoryController = {
         sub_category_name || subCategory.sub_category_name;
 
       write("subCategories", subCategories);
-      res.json(200, { status: 200, message: true });
+      response.json(200, { status: 200, message: true });
     } catch (error) {
-      res.json(500, { status: 500, message: error.message });
+      response.json(500, { status: 500, message: error.message });
     }
   },
   // method delete for subCategories
-  DELETE: async (req, res) => {
+  DELETE: async (request, response) => {
     try {
-      const { sub_category_id } = await req.body;
+      const { sub_category_id } = await request.body;
       const subCategories = read("subCategories");
       const subCategoryIndex = subCategories.findIndex(
         (subCategory) => subCategory.sub_category_id == sub_category_id
@@ -103,9 +106,9 @@ const subCategoryController = {
       const [deleted_subCategory] = subCategories.splice(subCategoryIndex, 1);
 
       write("subCategories", subCategories);
-      res.json(204, { status: 200 });
+      response.json(204, { status: 200 });
     } catch (error) {
-      res.json(400, { status: 400, message: error.message });
+      response.json(400, { status: 400, message: error.message });
     }
   },
 };
