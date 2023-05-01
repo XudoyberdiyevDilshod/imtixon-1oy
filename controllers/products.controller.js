@@ -10,21 +10,19 @@ const productController = {
     const subCategories = read("subCategories");
     const { sub_category_id, category_id, model, color } = request.query;
     const arr = [];
-    // filter with sub_category_id
-    const product = products.filter(
-      (product) => product.sub_category_id == sub_category_id
-    );
 
-    // find sub_category_id
-    const subCategoryId = subCategories.find(
-      (subCategory) => subCategory.sub_category_id == sub_category_id
+    // filter with sub_category_id
+    const subCategoryId = products.filter(
+      (product) => product.sub_category_id == sub_category_id
     );
     // validate sub_category_id
     if (!subCategoryId) {
       return response.json(200, arr);
     }
 
-    response.json(200, product);
+    if (subCategoryId) {
+      response.json(200, subCategoryId);
+    }
   },
   // method post for products
   POST: async (request, response) => {

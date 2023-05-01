@@ -5,15 +5,14 @@ import { read, write } from "../utils/model.js";
 
 const subCategoryController = {
   // method get for subCategories
-  GET: async (request, response) => {
-    const { sub_category_id } = await request.body;
+  GET: (request, response) => {
     const products = read("products");
     const subCategories = read("subCategories");
 
     subCategories.map((subCategory) => {
       subCategory.products = products.filter(
         (product) =>
-          product.sub_category_id == product.sub_category_id &&
+          product.sub_category_id == subCategory.sub_category_id &&
           delete product.sub_category_id
       );
 
@@ -23,12 +22,12 @@ const subCategoryController = {
     // find subCategoryId
 
     const subCategoryId = subCategories.find(
-      (subCategory) => subCategory.sub_category_id == sub_category_id
+      (subCategory) => subCategory.sub_category_id == products.sub_category_id
     );
-
-    if (subCategoryId) {
+    // validate sub_category_id
+    if (!subCategoryId) {
       response.json(200, subCategories);
-    } else throw new Error("not found sub_category_id");
+    } else throw new Error("category not found");
   },
   // method post for subCategories
   POST: async (request, response) => {
